@@ -33,6 +33,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>edu.zipcloud.cloudstreetmarket</groupId>
+			<artifactId>cloudstreetmarket-core</artifactId>
+			<version>${csm.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.bestvike</groupId>
 			<artifactId>linq</artifactId>
 		</dependency>
