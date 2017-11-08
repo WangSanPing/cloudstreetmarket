@@ -6,9 +6,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import edu.zipcloud.cloudstreetmarket.core.dtos.UserActivityDTO;
 import edu.zipcloud.cloudstreetmarket.core.enums.Action;
 
+@Service
 public class DummyCommunityServiceImpl implements ICommunityService
 {
 
