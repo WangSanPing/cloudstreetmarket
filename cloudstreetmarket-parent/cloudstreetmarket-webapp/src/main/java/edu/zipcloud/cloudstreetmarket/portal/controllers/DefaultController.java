@@ -19,7 +19,7 @@ import edu.zipcloud.cloudstreetmarket.core.services.IMarketService;
  * @version 1.0.0
  */
 @Controller
-public class DefaultController
+public class DefaultController extends CloudstreetWebAppWCI
 {
 	@Autowired
 	private IMarketService marketService;

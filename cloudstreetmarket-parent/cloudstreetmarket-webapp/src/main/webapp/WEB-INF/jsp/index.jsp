@@ -190,7 +190,10 @@
 								pattern="yyyy-MM-dd" />
 						</div>
 						<select class="form-control centeredElementBox">
-							${dailyMarketActivity.markenShortName }
+							<c:forEach var="item" items="${dailyMarketsActivity }">
+								<option value=" ${item.marketId }">
+									${item.marketShortName }</option>
+							</c:forEach>
 						</select>
 					</div>
 
@@ -213,30 +216,24 @@
 								<tr>
 									<c:forEach var="market" items="${dailyMarketsActivity }">
 										<tr>
-											<c:forEach var="market" items="${dailyMarketsActivity }">
-												<tr>
-													<td>${market.marketShortName}</td>
-													<td style="text-align: right"></td>
-													<td style="text-align: right;"><fmt:formatNumber
-															type="number" maxFractionDigits="3"
-															value="${ market.latestValue }"></fmt:formatNumber></td>
-													<c:choose>
-														<c:when test="${market.latestChange >= 0 }">
-															<c:set var="textStyle" scope="page" value="text-success"></c:set>
-														</c:when>
-														<c:otherwise>
-															<c:set var="textStyle" scope="page" value="text-error">
-															</c:set>
-														</c:otherwise>
-													</c:choose>
-													<td class='${textStyle}' style="text-align: right;"><b>
-															<fmt:formatNumber type="percent" maxFractionDigits="2"
-																value="${ market.latestChange }">
-
-															</fmt:formatNumber>
-													</b></td>
-												</tr>
-											</c:forEach>
+											<td>${market.marketShortName}</td>
+											<td style="text-align: right;"><fmt:formatNumber
+													type="number" maxFractionDigits="3"
+													value="${ market.latestValue }"></fmt:formatNumber></td>
+											<c:choose>
+												<c:when test="${market.latestChange >= 0 }">
+													<c:set var="textStyle" scope="page" value="text-success"></c:set>
+												</c:when>
+												<c:otherwise>
+													<c:set var="textStyle" scope="page" value="text-error">
+													</c:set>
+												</c:otherwise>
+											</c:choose>
+											<td class='${textStyle}' style="text-align: right;"><b>
+													<fmt:formatNumber type="percent" maxFractionDigits="2"
+														value="${ market.latestChange }">
+													</fmt:formatNumber>
+											</b></td>
 										</tr>
 									</c:forEach>
 								</tr>
@@ -264,14 +261,19 @@
 								</c:if>
 								<li>
 									<div class="itemTitle">
-										<div class="listUserIco ${defaultProfileImage }">
-											<c:if test="${activity.urlProfilePicture != null }">
-												<img alt="" src="${activity.urlProfilePicture }">
+										<div class="listUserIco ${defaultProfileImage}">
+											<c:if test="${activity.urlProfilePicture != null}">
+												<img src='${activity.urlProfilePicture}' />
 											</c:if>
 										</div>
-										<div class="itemTitle">
-											<div class="listUserIco ${ icoUpDown } listActionIco"></div>
-										</div>
+										<span class="ico-white ${icoUpDown} listActionIco"></span> <a
+											href="#">${activity.userName}</a> at
+										$${activity.userAction.presentTense} ${activity.amount} <a
+											href="#">${activity.valueShortId}</a> at $${activity.price}
+										<p class="itemDate">
+											<fmt:formatDate value="${activity.date }"
+												pattern="dd/MM/yyyy hh:mm aaa" />
+										</p>
 									</div>
 								</li>
 							</c:forEach>
@@ -519,58 +521,13 @@
 	<script type="text/javascript" src="js/raphael.js"></script>
 	<script type="text/javascript" src="js/morris.min.js"></script>
 	<script>
-		$(function() {
-			var financial_data = [ {
-				"period" : "08:00",
-				"index" : 66
-			}, {
-				"period" : "09:00",
-				"index" : 62
-			}, {
-				"period" : "10:00",
-				"index" : 61
-			}, {
-				"period" : "11:00",
-				"index" : 50
-			}, {
-				"period" : "12:00",
-				"index" : 63
-			}, {
-				"period" : "13:00",
-				"index" : 56
-			}, {
-				"period" : "14:00",
-				"index" : 64
-			}, {
-				"period" : "15:00",
-				"index" : 57
-			}, {
-				"period" : "16:00",
-				"index" : 65
-			}, {
-				"period" : "17:00",
-				"index" : 88
-			} ];
-			Morris.Line({
-				element : 'landingGraphContainer',
-				hideHover : 'auto',
-				data : financial_data,
-				ymax : 70,
-				ymin : 50,
-				pointSize : 3,
-				hideHover : 'always',
-				xkey : 'period',
-				xLabels : 'month',
-				ykeys : [ 'index' ],
-				postUnits : '',
-				parseTime : false,
-				labels : [ 'Index' ],
-				resize : true,
-				smooth : false,
-				lineColors : [ '#A52A2A' ]
-			});
-		});
-	</script>
+			$(function() {
+				var financial_data = [];
+				<c:forEach var="dailySnapshot" items="${dailyMarketActivity.values}">
+						financial_data.push({"period": '<c:out value="${dailySnapshot.key}"/>', "index": <c:out value='${dailySnapshot.value}'/>});
+				</c:forEach>
+		</script>
+
 	<!-- end: Java Script -->
 
 </body>

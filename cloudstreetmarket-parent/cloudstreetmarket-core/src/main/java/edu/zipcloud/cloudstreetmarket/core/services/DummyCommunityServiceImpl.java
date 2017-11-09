@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.bestvike.linq.Linq;
+
 import edu.zipcloud.cloudstreetmarket.core.dtos.UserActivityDTO;
 import edu.zipcloud.cloudstreetmarket.core.enums.Action;
 
@@ -33,6 +35,7 @@ public class DummyCommunityServiceImpl implements ICommunityService
 						LocalDateTime.parse("2015-11-15 09:50", formatter)),
 				new UserActivityDTO("userB", null, Action.BUY, "AAL.L", 6, new BigDecimal(7),
 						LocalDateTime.parse("2015-11-15 09:46", formatter)));
+		
 		return result;
 	}
 
