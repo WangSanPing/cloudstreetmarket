@@ -10,7 +10,7 @@
 	<packaging>war</packaging>
 	<name>CloudStreetMarket Webapp</name>
 	<description>Webapp</description>
-	<build>
+	<build> 
 		<finalName>portal</finalName>
 		<plugins>
 			<plugin>

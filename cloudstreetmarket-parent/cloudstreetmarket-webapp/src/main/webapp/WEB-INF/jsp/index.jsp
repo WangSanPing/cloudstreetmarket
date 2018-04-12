@@ -1,10 +1,10 @@
-<%@ page contentType="text/html; charset=ISO-8859-1" language="java"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page contentType="text/html; charset=ISO-8859-1" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false"%>
 
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="cloudStreetMarketApp">
 
 <head>
 <!-- start: Meta -->
@@ -106,7 +106,7 @@
 										</div>
 									</div>
 								</li>
-								<li>
+								<li >
 									<div class="social-small-item">
 										<div class="social-small-info-wrap">
 											<div class="social-small-info">
@@ -184,8 +184,13 @@
 					</div>
 				</div>
 				<div class="span5">
-					<div id='landingGraphContainer'>
-						<div class="morrisTitle">
+					<div id='landingGraphContainer' ngcontroller="homeFinancialGraphController">
+						<select class="form-control centeredElementBox">
+							<option value="${dailyMarketActivity.marketId}">
+								${dailyMarketActivity.marketShortName}
+							</option>
+						</select>
+						<!-- <div class="morrisTitle">
 							<fmt:formatDate value="${dailyMarketActivity.dateSnapshot }"
 								pattern="yyyy-MM-dd" />
 						</div>
@@ -194,7 +199,7 @@
 								<option value=" ${item.marketId }">
 									${item.marketShortName }</option>
 							</c:forEach>
-						</select>
+						</select> -->
 					</div>
 
 					<!--
@@ -203,7 +208,7 @@
                         	描述：市场主体部分
                         -->
 					<div id=tableMarketPrices>
-						<table
+						<!-- <table
 							class="table table-hover table-condensed table-bordered table-striped">
 							<thead>
 								<tr>
@@ -238,12 +243,48 @@
 									</c:forEach>
 								</tr>
 							</tbody>
-						</table>
+						</table> -->
+						<script>
+							var dailyMarketsActivity = [];
+							var market;
+						</script>
+							<c:forEach var="market" items="${dailyMarketsActivity}">
+								<script>
+								market = {};
+								market.marketShortName = "${market.marketShortName}";
+								market.latestValue = (${market.latestChange}).toFixed(2);
+								market.latestChange = (${market.latestChange} * 100).toFixed(2);
+								dailyMarketsActivity.push(market);
+								</script>
+							</c:forEach>
+						<div>
+							<table class="table table-hover table-condensed tablebordered table-striped" data-ngcontroller='homeFinancialTableController'>
+								<thead>
+									<tr>
+										<th>
+											Index
+										</th>
+										<th>
+											Value
+										</th>
+										<th>
+											Change
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr data-ng-repeat="value in financialMarkets">
+										<td>{{value.marketShortName}}</td>
+										<td style="text-align:right">{{value.latestValue}}</td>
+										<td class='{{value.style}}' style='text-align:right'><strong>{{value.latestChange}}%</strong></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
-				<div id="containerCommunity" class="span7">
-					<div id="divRss3">
-						<ul class="feedEkList">
+				<div  class="span7">
+						<%-- <ul class="feedEkList">
 							<c:forEach var="activity" items="${recentUserActivity }">
 								<c:choose>
 									<c:when test="${activity.userAction == 'BUY' }">
@@ -277,7 +318,41 @@
 									</div>
 								</li>
 							</c:forEach>
-						</ul>
+						</ul> --%>
+						<div id="divRss3">
+							<ul class="feedEkList" data-ng-controller='homeCommunityActivityController'>
+								<script>
+									var userActivities = [];
+									var userActivity;
+								</script>
+								<c:forEach var="activity" items="${recentUserActivity}">
+									<script>
+										userActivity = {};
+										userActivity.userAction = '${activity.userAction}';
+										userActivity.urlProfilePicture = '${activity.urlProfilePicture}';
+										userActivity.userName = '${activity.userName}';
+										userActivity.date = '<fmt:formatDate value="${activity.date}" pattern="yyyy/MM/dd hh:mm aaa"/>';
+										userActivity.userActionPresentTense = '${activity.userAction.presentTense}';
+										userActivity.amount = ${activity.amount};
+										userActivity.valueShortId = '${activity.valueShortId}';
+										userActivity.price = (${activity.price}).toFixed(2);
+										userActivities.push(userActivity);
+									</script>
+								</c:forEach>
+								<li data-ng-repeat="value in communityActivities">
+									<div class="itemTitle">
+										<div class="listUserIco {{value.defaultProfileImage}}">
+											<img ng-if="value.urlProfilePicture" src='{{value.urlProfilePicture}}'>
+										</div>
+										<span class="ico-white {{value.iconDirection}} listActionIco"></span>
+										<a href="#">{{value.userName}}</a>
+										{{value.userActionPresentTense}}{{value.amount}}
+										<a href="#">{{value.valueShortId}}</a> at {{value.price}}
+										<p class="itemDate">{{value.date}}</p>
+									</div>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -520,14 +595,23 @@
 	<script type="text/javascript" src="js/FeedEk.js"></script>
 	<script type="text/javascript" src="js/raphael.js"></script>
 	<script type="text/javascript" src="js/morris.min.js"></script>
+	<script type="text/javascript" src="js/angular.js"></script>
+
 	<script>
 			$(function() {
 				var financial_data = [];
 				<c:forEach var="dailySnapshot" items="${dailyMarketActivity.values}">
 						financial_data.push({"period": '<c:out value="${dailySnapshot.key}"/>', "index": <c:out value='${dailySnapshot.value}'/>});
 				</c:forEach>
-		</script>
-
+			}
+	</script>
+	<script>
+		var cloudStreetMarketApp = angular.module('cloudStreetMarketApp',[]);
+   		
+	</script>
+	<script type="text/javascript" src="js/index/home_community_activity.js"></script>
+	<script type="text/javascript" src="js/index/home_financial_graph.js"></script>
+	<script type="text/javascript" src="js/index/home_financial_table.js"></script>
 	<!-- end: Java Script -->
 
 </body>

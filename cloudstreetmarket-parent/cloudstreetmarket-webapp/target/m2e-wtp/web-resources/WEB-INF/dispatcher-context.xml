@@ -13,6 +13,7 @@
 	http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 
 	<context:component-scan base-package="edu.zipcloud.cloudstreetmarket.portal" />
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
 
 	<bean
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
@@ -27,7 +28,19 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-	<mvc:annotation-driven />
+	<mvc:interceptors>
+		<bean class="edu.zipcloud.cloudstreetmarket.portal.controllers.CloudstreetWebAppWCI">
+		<property name="cacheMappings">
+			<props>
+				<prop key="/**/*.js">86400</prop>
+				<prop key="/**/*.css">86400</prop>
+				<prop key="/**/*.png">86400</prop>
+				<prop key="/**/*.jpg">86400</prop>
+			</props>
+		</property>
+		</bean> 
+	</mvc:interceptors>
+	<mvc:annotation-driven /> 
 	<mvc:resources mapping="/css/**" location="/css/" />
 	<mvc:resources mapping="/img/**" location="/img/" />
 	<mvc:resources mapping="/js/**" location="/js/" />
